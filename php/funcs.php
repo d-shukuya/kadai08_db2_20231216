@@ -33,9 +33,16 @@ function redirect($file_name)
     exit();
 }
 
-// タグ名からDBカラム名を引き当てるテーブル
+// タグ名からbooksテーブルのカラム名を引き当てるテーブル
 $tagNameToBooksTableColumn = array(
     'book_name' => 'name',
     'book_url' => 'url',
     'book_memo' => 'content',
+);
+
+// タグ名からdog_earテーブルのカラム名を引き当てるテーブル
+$tagNameToDogEarTableColumn = array(
+    'page_number' => 'page_number',
+    'line_number' => 'line_number',
+    'dog_ear_memo' => 'content',
 );

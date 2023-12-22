@@ -1,4 +1,8 @@
 // イベント
+$("#top_btn").on("click", function () {
+  window.location.href = "../";
+});
+
 let oldBookName;
 $("#book_name")
   .on("focus", function () {
@@ -27,37 +31,37 @@ $("#img_upload").on("change", function (e) {
   formData.append("book_id", $(this).data("book_id"));
 
   $.ajax({
-    url: "./book_cover_update.php",
+    url: "./update_book_cover_file.php",
     type: "POST",
     data: formData,
     processData: false,
     contentType: false,
-  })
-    .done(function (data) {
-      console.log(data);
-    })
-    .fail(function () {
-      console.log("Upload failed.");
-    });
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error: " + textStatus + ": " + errorThrown);
+    },
+  });
 });
 
 $("#book_url_edit_btn").on("click", function () {
-  const aTagHref = $('#book_url').attr('href');
-  $('#book_url_update').val(aTagHref);
+  const aTagHref = $("#book_url").attr("href");
+  $("#book_url_update").val(aTagHref);
   $("#book_url_box").css("display", "none");
   $("#book_url_edit_box").css("display", "flex");
 });
 
 $("#book_url_ok").on("click", function () {
-  const aTag = $('#book_url');
-  const input = $('#book_url_update');
-  const oldUrl = aTag.attr('href');
+  const aTag = $("#book_url");
+  const input = $("#book_url_update");
+  const oldUrl = aTag.attr("href");
   const newUrl = input.val();
 
   if (oldUrl == newUrl) return;
 
   postUpdateBooks("book_url", newUrl, $(this).data("book_id"));
-  aTag.attr('href', newUrl);
+  aTag.attr("href", newUrl);
 
   $("#book_url_box").css("display", "flex");
   $("#book_url_edit_box").css("display", "none");
@@ -77,7 +81,41 @@ $("#book_memo").on("change", function () {
 });
 
 $("#book_delete_btn").on("click", function () {
+  if (confirm("本当に削除しますか？")) {
+    const bookId = $(this).data("book_id");
 
+    $.ajax({
+      url: "./delete_book_cover_file.php",
+      type: "post",
+      data: { book_id: bookId },
+      success: function (response) {
+        console.log(response);
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        console.log("Error: " + textStatus + ": " + errorThrown);
+      },
+    });
+
+    window.location.href = `./delete_book.php?book_id=${bookId}`;
+  }
+});
+
+$(".dog_ear_item").on("change", "input, textarea", function () {
+  $val = $(this).val();
+  $type = $(this).attr("name");
+  postUpdateDogEar(
+    $(this).attr("name"),
+    $(this).val(),
+    $(this).data("dog_ear_id")
+  );
+});
+
+$(".dog_ear_item").on("click", ".delete_dog_ear", function () {
+  if (confirm("本当に削除しますか？")) {
+    const bookId = $(this).data("book_id");
+    const dogEarId = $(this).data("dog_ear_id");
+    window.location.href = `./delete_dog_ear.php?book_id=${bookId}&dog_ear_id=${dogEarId}`;
+  }
 });
 
 // 関数
@@ -92,6 +130,27 @@ function postUpdateBooks(type, changeVal, bookId) {
     },
     success: function (response) {
       console.log(response);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error: " + textStatus + ": " + errorThrown);
+    },
+  });
+}
+
+function postUpdateDogEar(type, changeVal, dogEarId) {
+  $.ajax({
+    url: "./update_dog_ear.php",
+    type: "post",
+    data: {
+      type: type,
+      change_val: changeVal,
+      dog_ear_id: dogEarId,
+    },
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error: " + textStatus + ": " + errorThrown);
     },
   });
 }

@@ -3,7 +3,8 @@
 include("./funcs.php");
 
 // 2. 変数定義
-$columnName = $tagNameToBooksTableColumn[$_POST['type']];
+$type = $_POST['type'];
+$columnName = $tagNameToDogEarTableColumn[$type];
 
 // 3. DB接続
 $pdo = db_conn();
@@ -12,17 +13,24 @@ $pdo = db_conn();
 // 4-1. SQL文
 $stmt = $pdo->prepare(
     "UPDATE
-        gs_bm_books
+        gs_bm_dog_ear
     SET
         $columnName = :change_val,
         update_date = sysdate()
     WHERE
-        id = :book_id"
+        id = :dog_ear_id"
 );
 
 // 4-2. バインド変数を定義
-$stmt->bindValue(':change_val', $_POST["change_val"], PDO::PARAM_STR);
-$stmt->bindValue(':book_id', $_POST["book_id"], PDO::PARAM_INT);
+$param = '';
+if ($columnName == 'content') {
+    $param = PDO::PARAM_STR;
+} else {
+    $param = PDO::PARAM_INT;
+}
+
+$stmt->bindValue(':change_val', $_POST["change_val"], $param);
+$stmt->bindValue(':dog_ear_id', $_POST["dog_ear_id"], PDO::PARAM_INT);
 
 // 4-3. 登録
 $status = $stmt->execute();

@@ -35,8 +35,8 @@ if ($statusBooks == false) {
         $bookName = $resultBooks['name'];
         $bookUrl = $resultBooks['url'];
         $bookMemo = $resultBooks['content'];
-        $createdDateBooks = $resultBooks['created_date'];
-        $updateDateBooks = $resultBooks['update_date'];
+        $createdDateBooks = substr($resultBooks['created_date'], 0, 10);
+        $updateDateBooks = substr($resultBooks['update_date'], 0, 10);
     }
 }
 
@@ -49,30 +49,30 @@ if ($statusDogEar == false) {
     sql_error($stmt);
 } else {
     while ($resultDogEar = $stmtDogEar->fetch(PDO::FETCH_ASSOC)) {
-        $dogEarId12 = str_pad($resultDogEar['id'], 12, "0", STR_PAD_LEFT);
-        $createdDateDogEar = substr($resultDogEar['created_date'], 0, 10);
-        $updateDateDogEar = substr($resultDogEar['update_date'], 0, 10);
+        $dogEarId12 = h(str_pad($resultDogEar['id'], 12, "0", STR_PAD_LEFT));
+        $createdDateDogEar = h(substr($resultDogEar['created_date'], 0, 10));
+        $updateDateDogEar = h(substr($resultDogEar['update_date'], 0, 10));
 
         $view .= "<li class='dog_ear_item'>";
         $view .=    "<div class='left_block'>";
         $view .=        "<div class='input_fmt'>";
         $view .=            "<label>ページ：</label>";
-        $view .=            "<input type='text' name='page_number' value='" . h($resultDogEar['page_number']) . "'>";
+        $view .=            "<input type='text' name='page_number' data-dog_ear_id='" . $dogEarId12 . "' value='" . h($resultDogEar['page_number']) . "'>";
         $view .=        "</div>";
         $view .=        "<div class='input_fmt'>";
         $view .=            "<label>行：</label>";
-        $view .=            "<input type='text' name='line_number' value='" . h($resultDogEar['line_number']) . "'>";
+        $view .=            "<input type='text' name='line_number' data-dog_ear_id='" . $dogEarId12 . "' value='" . h($resultDogEar['line_number']) . "'>";
         $view .=        "</div>";
         $view .=        "<div class='dog_ear_date_info'>";
-        $view .=            "<p>登録日： " . h($createdDateDogEar) . "</p>";
-        $view .=            "<p>更新日： " . h($updateDateDogEar) . "</p>";
+        $view .=            "<p>登録日： " . $createdDateDogEar . "</p>";
+        $view .=            "<p>更新日： " . $updateDateDogEar . "</p>";
         $view .=        "</div>";
         $view .=    "</div>";
         $view .=    "<div class='dog_ear_memo_box'>";
         $view .=        "<label>メモ：</label>";
-        $view .=        "<textarea name='dog_ear_memo'>" . h($resultDogEar['content']) . "</textarea>";
+        $view .=        "<textarea name='dog_ear_memo' data-dog_ear_id='" . $dogEarId12 . "'>" . h($resultDogEar['content']) . "</textarea>";
         $view .=    "</div>";
-        $view .=    "<div class='delete_dog_ear' data-dog_ear_id='" . h($dogEarId12) . "'>削除</div>";
+        $view .=    "<div class='delete_dog_ear' data-book_id='" . $bookId12 . "' data-dog_ear_id='" . $dogEarId12 . "'>削除</div>";
         $view .= "</li>";
     }
 }
@@ -91,6 +91,7 @@ if ($statusDogEar == false) {
 
 <body>
     <header>
+        <div id="top_btn">DogEarApp.</div>
         <h1 id="book_name" data-book_id=<?= h($bookId12) ?> contenteditable="true"><?= h($bookName) ?></h1>
         <div id="book_cover_box">
             <img id='book_cover_img' src="<?= h($BookCoverImg) ?>" alt="">
@@ -111,7 +112,7 @@ if ($statusDogEar == false) {
             <p>登録日： <?= h($createdDateBooks) ?></p>
             <p>更新日： <?= h($updateDateBooks) ?></p>
         </div>
-        <div id="book_delete_btn">本を削除</div>
+        <div id="book_delete_btn" data-book_id=<?= h($bookId12) ?>>本を削除</div>
     </header>
 
     <nav>

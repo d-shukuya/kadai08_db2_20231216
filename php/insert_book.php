@@ -50,4 +50,4 @@ if ($_FILES["book_cover_img"]["error"] == UPLOAD_ERR_OK) {
 }
 
 // 4-2-2. index.php に遷移
-header('Location: ../');
+redirect('../');
