@@ -3,36 +3,55 @@
 include("./php/funcs.php");
 
 // 2. DB接続
-$pdo = db_conn();
+$pdoOrder = db_conn();
+$pdoBooks = db_conn();
 
 // 3. データ取得
-$stmt = $pdo->prepare('SELECT * FROM gs_bm_books');
-$status = $stmt->execute();
-
-// 4. データ表示
-$view = "";
-if ($status == false) {
-    sql_error($stmt);
+// 3-1. order
+$stmtOrder = $pdoOrder->prepare('SELECT `order` FROM gs_bm_order WHERE `type` = "books"');
+$statusOrder = $stmtOrder->execute();
+if ($statusOrder == false) {
+    sql_error($stmtOrder);
 } else {
-    while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $id12 = str_pad($result['id'], 12, "0", STR_PAD_LEFT);
-        $files = glob("./book_cover/$id12.*");
-        $coverImgPath = (count($files) > 0) ? $files[0] : './book_cover/sample_cover.png';
-        $createdDate = substr($result['created_date'], 0, 10);
-        $updateDate = substr($result['update_date'], 0, 10);
+    $result = $stmtOrder->fetch(PDO::FETCH_ASSOC);
+    $orderAry = json_decode($result['order'], true);
+}
 
-        $view .= "<li class='book_item' data-book_id='" . h($id12) . "'>";
-        $view .=    "<h3>" . h($result['name']) . "</h3>";
-        $view .=    "<div class='book_cover'><img src='" . $coverImgPath . "'></div>";
-        if (!is_null($result['url']) && $result['url'] != "") {
-            $view .= "<a href='" . h($result['url']) . "'>外部リンク</a>";
-        };
-        $view .=    "<div class='date_info'>";
-        $view .=        "<p>登録日： " . h($createdDate) . "</p>";
-        $view .=        "<p?>更新日： " . h($updateDate) . "</p>";
-        $view .=    "</div>";
-        $view .= "</li>";
+// 3-2. books
+$stmtBooks = $pdoBooks->prepare('SELECT * FROM gs_bm_books');
+$statusBooks = $stmtBooks->execute();
+$view = "";
+$resAry = array();
+if ($statusBooks == false) {
+    sql_error($stmtBooks);
+} else {
+    while ($result = $stmtBooks->fetch(PDO::FETCH_ASSOC)) {
+        $resAry[$result['id']] = $result;
     }
+    for ($i=0; $i < count($orderAry); $i++) { 
+        $view = createView($resAry[$orderAry[$i]], $view);
+    }
+}
+
+function createView($result, $view){
+    $id12 = str_pad($result['id'], 12, "0", STR_PAD_LEFT);
+    $files = glob("./book_cover/$id12.*");
+    $coverImgPath = (count($files) > 0) ? $files[0] : './book_cover/sample_cover.png';
+    $createdDate = substr($result['created_date'], 0, 10);
+    $updateDate = substr($result['update_date'], 0, 10);
+
+    $view .= "<li class='book_item' id='" . h($id12) . "'>";
+    $view .=    "<h3>" . h($result['name']) . "</h3>";
+    $view .=    "<div class='book_cover'><img src='" . $coverImgPath . "'></div>";
+    if (!is_null($result['url']) && $result['url'] != "") {
+        $view .= "<a href='" . h($result['url']) . "'>外部リンク</a>";
+    };
+    $view .=    "<div class='date_info'>";
+    $view .=        "<p>登録日： " . h($createdDate) . "</p>";
+    $view .=        "<p?>更新日： " . h($updateDate) . "</p>";
+    $view .=    "</div>";
+    $view .= "</li>";
+    return $view;
 }
 ?>
 
@@ -76,6 +95,7 @@ if ($status == false) {
 
     <!-- JSの読み込み -->
     <script src="./js/jquery-2.1.3.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="./js/script_book.js"></script>
 </body>
 
