@@ -1,3 +1,8 @@
+// ソートテーブルのセット
+$(function () {
+  $("#dog_ear_list").sortable();
+});
+
 // イベント
 $("#top_btn").on("click", function () {
   window.location.href = "../";
@@ -118,6 +123,18 @@ $(".dog_ear_item").on("click", ".delete_dog_ear", function () {
   }
 });
 
+$("#dog_ear_list").sortable({
+  stop: function (event, ui) {
+    let ary = $(this).sortable("toArray");
+    let order = [];
+    let bookId = $(this).data('book_id');
+    ary.forEach(ele => {
+      order.push(parseInt(ele, 10));
+    });
+    postUpdateDogEarOrder(JSON.stringify(order), bookId);
+  },
+});
+
 // 関数
 function postUpdateBooks(type, changeVal, bookId) {
   $.ajax({
@@ -145,6 +162,24 @@ function postUpdateDogEar(type, changeVal, dogEarId) {
       type: type,
       change_val: changeVal,
       dog_ear_id: dogEarId,
+    },
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error: " + textStatus + ": " + errorThrown);
+    },
+  });
+}
+
+function postUpdateDogEarOrder(order, bookId) {
+  $.ajax({
+    url: "./update_order.php",
+    type: "post",
+    data: {
+      type: "dog_ear",
+      book_id: bookId,
+      order: order,
     },
     success: function (response) {
       console.log(response);

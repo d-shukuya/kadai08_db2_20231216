@@ -28,7 +28,7 @@ if ($type == 'books') {
         'UPDATE
             gs_bm_order
         SET
-            order = :order
+            `order` = :order
         WHERE
             book_id = :book_id'
     );
