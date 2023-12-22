@@ -1,0 +1,228 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template: 
+        "left_top    right" 600px
+        "left_bottom right" 1fr
+    /    550px       1fr;
+}
+
+header {
+    grid-area: left_top;
+    background: beige;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header>img {
+    width: 500px;
+    height: auto;
+    border-top-right-radius: 30%;
+}
+
+header>h1 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color: #71645B;
+    font-size: 40px;
+}
+
+nav {
+    grid-area: left_bottom;
+    background: beige;
+}
+
+#register_book_box {
+    margin: 0;
+    padding: 0;
+    width: 550px;
+    height: 100%;
+    display: grid;
+    grid-template: 
+        "top   top    top      top     top" 80px
+        "..... left   center_1 right_1 ....." 70px
+        "..... left   center_2 right_2 ....." 60px
+        "..... bottom bottom   bottom  ....." 1fr
+    /    50px  110px   1fr      3fr     50px;
+}
+
+#register_book_box>h2 {
+    grid-area: top;
+    width: 450px;
+    height: 100%;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color: #71645B;
+    font-size: 24px;
+    line-height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    border-bottom: 2px solid #71645B;
+}
+
+#book_cover_box {
+    grid-area: left;
+    display: flex;
+    overflow: hidden;
+    padding: 10px 20px 0px 0px;
+    z-index: 10;
+}
+
+#book_cover_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-right-radius: 30px;
+}
+
+#img_upload {
+    display:none;
+}
+
+#book_name_label {
+    grid-area: center_1;
+}
+
+#book_url_label {
+    grid-area: center_2;
+}
+
+.label_fmt {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    border-bottom: 1px solid #71645B;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #71645B;
+    line-height: 24px;
+}
+
+#book_name {
+    grid-area: right_1;
+}
+
+#book_url {
+    grid-area: right_2;
+}
+
+.textbox_fmt {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    border-bottom: 1px solid #71645B;
+    margin: auto;
+}
+
+.input_textbox {
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: #71645B;
+    border: none;
+    background: beige;
+}
+
+#book_register_btn {
+    grid-area: bottom;
+    height: 60px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+}
+
+.button {
+    width: 80px;
+    height: 30px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: beige;
+    background: #71645B;
+    border-top-right-radius: 15px;
+    border: none;
+}
+
+main {
+    grid-area: right;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    overflow: auto;
+    background: beige;
+}
+
+#book_list {
+    width: 100%;
+    height: auto;
+    margin: 30px 50px 30px 30px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.book_item {
+    box-sizing: border-box;
+    width: 500px;
+    height: 400px;
+    margin: 0px 25px 25px 25px;
+    padding: 0px 30px;
+    background: #71645b7a;
+    border-top-right-radius: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.book_item>h3 {
+    width: 450px;
+    height: 32px;
+    overflow: hidden;
+    word-break: break-all;
+    margin: 20px 0px;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #71645B;
+}
+
+.book_cover {
+    height: 250px;
+    width: 450px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.book_cover>img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.book_item>a {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 10px 0px;
+}
+
+.date_info {
+    width: 100%;
+    margin: 10px 0px;
+    display: flex;
+    justify-content: space-evenly;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #71645B;
+}
