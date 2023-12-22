@@ -92,14 +92,17 @@ if ($statusDogEar == false) {
 <body>
     <header>
         <h1 id="book_name" data-book_id=<?= h($bookId12) ?> contenteditable="true"><?= h($bookName) ?></h1>
-        <div id="book_cover_box"><img src="<?= h($BookCoverImg) ?>" alt=""></div>
+        <div id="book_cover_box">
+            <img id='book_cover_img' src="<?= h($BookCoverImg) ?>" alt="">
+            <input type="file" id="img_upload" accept="image/*" name="book_cover_img" data-book_id=<?= h($bookId12) ?>>
+        </div>
         <div id="book_url_box" class="book_url_box_fmt">
             <a id="book_url" href='<?= h($bookUrl) ?>'>外部リンク</a>
             <img id="book_url_edit_btn" src="../img/edit.png" alt="">
         </div>
         <div id="book_url_edit_box" class="book_url_box_fmt">
-            <input id="book_url_update" type="text" name="book_url_update" value="<?= h($bookUrl) ?>">
-            <div id="book_url_ok" class="book_url_btn">○</div>
+            <input id="book_url_update" type="text" name="book_url_update">
+            <div id="book_url_ok" class="book_url_btn" data-book_id=<?= h($bookId12) ?>>○</div>
             <div id="book_url_cancel" class="book_url_btn">×</div>
         </div>
         <h2>書籍のメモ</h2>
@@ -108,6 +111,7 @@ if ($statusDogEar == false) {
             <p>登録日： <?= h($createdDateBooks) ?></p>
             <p>更新日： <?= h($updateDateBooks) ?></p>
         </div>
+        <div id="book_delete_btn">本を削除</div>
     </header>
 
     <nav>

@@ -47,6 +47,10 @@ header>h1 {
     object-fit: cover;
 }
 
+#img_upload {
+    display:none;
+}
+
 .book_url_box_fmt {
     display: flex;
     justify-content: center;
@@ -124,6 +128,20 @@ header>h2 {
     justify-content: space-evenly;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #71645B;
+}
+
+#book_delete_btn {
+    margin: 5px 0px;
+    width: 100px;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+    color: beige;
+    background: #71645B;
+    border-top-right-radius: 15px;
+    border: none;
 }
 
 nav {
