@@ -7,6 +7,18 @@ $bookId12 = $_GET['book_id'];
 $hBookId12 = h($bookId12);
 
 // 3. DB接続&取得
+// 3-1. BooksOrder
+$pdoOrder = db_conn();
+$stmtOrder = $pdoOrder->prepare('SELECT `order` FROM gs_bm_order WHERE `type` = "books"');
+$statusOrder = $stmtOrder->execute();
+if ($statusOrder == false) {
+    sql_error($stmtOrder);
+} else {
+    $resultOrder = $stmtOrder->fetch(PDO::FETCH_ASSOC);
+    $orderJSON = $resultOrder['order'];
+    $orderAry = json_decode($orderJSON, true);
+}
+
 // 3-1. Books
 $pdoBooks = db_conn();
 $stmtBooks = $pdoBooks->prepare(
@@ -38,7 +50,8 @@ if ($statusDogEarOrder == false) {
     sql_error($stmtDogEarOrder);
 } else {
     $resultDogEarOrder = $stmtDogEarOrder->fetch(PDO::FETCH_ASSOC);
-    $dogEatOrderAry = json_decode($resultDogEarOrder['order'], true);
+    $dogEarOrderJSON = $resultDogEarOrder['order'];
+    $dogEarOrderAry = json_decode($dogEarOrderJSON, true);
 }
 
 // 3-3. DogEar
@@ -55,12 +68,12 @@ if ($statusDogEar == false) {
     while ($resultDogEar = $stmtDogEar->fetch(PDO::FETCH_ASSOC)) {
         $resAry[$resultDogEar['id']] = $resultDogEar;
     }
-    for ($i = 0; $i < count($dogEatOrderAry); $i++) {
-        $view = createView($hBookId12, $resAry[$dogEatOrderAry[$i]], $view);
+    for ($i = 0; $i < count($dogEarOrderAry); $i++) {
+        $view = createView($hBookId12, $resAry[$dogEarOrderAry[$i]], $view, $dogEarOrderJSON);
     }
 }
 
-function createView($hBookId, $result, $view)
+function createView($hBookId, $result, $view, $dogEarOrderJSON)
 {
     $hDogEarId12 = h(str_pad($result['id'], 12, "0", STR_PAD_LEFT));
     $hPageNumber = h($result['page_number']);
@@ -68,6 +81,7 @@ function createView($hBookId, $result, $view)
     $hDogEarMemo = h($result['content']);
     $hCreatedDateDogEar = h(substr($result['created_date'], 0, 10));
     $hUpdateDateDogEar = h(substr($result['update_date'], 0, 10));
+    $hDogEarOrderJSON = h($dogEarOrderJSON);
 
     $view .= "<li id='$hDogEarId12' class='dog_ear_item'>";
     $view .=    "<div class='left_block'>";
@@ -88,7 +102,7 @@ function createView($hBookId, $result, $view)
     $view .=        "<label>メモ：</label>";
     $view .=        "<textarea name='dog_ear_memo' data-dog_ear_id='$hDogEarId12'>$hDogEarMemo</textarea>";
     $view .=    "</div>";
-    $view .=    "<div class='delete_dog_ear' data-book_id='$hBookId' data-dog_ear_id='$hDogEarId12'>削除</div>";
+    $view .=    "<div class='delete_dog_ear' data-book_id='$hBookId' data-dog_ear_id='$hDogEarId12' data-dog_ear_order='$hDogEarOrderJSON'>削除</div>";
     $view .= "</li>";
     return $view;
 }
@@ -128,13 +142,14 @@ function createView($hBookId, $result, $view)
             <p>登録日： <?= $hCreatedDateBooks ?></p>
             <p>更新日： <?= $hUpdateDateBooks ?></p>
         </div>
-        <div id="book_delete_btn" data-book_id=<?= $hBookId12 ?>>本を削除</div>
+        <div id="book_delete_btn" data-book_id=<?= $hBookId12 ?> data-books_order=<?= h($orderJSON) ?>>本を削除</div>
     </header>
 
     <nav>
         <form action="./insert_dog_ear.php" method="post">
             <fieldset>
                 <input type="hidden" name="book_id" value=<?= $hBookId12 ?>></input>
+                <input type="hidden" id="dog_ear_order" name="dog_ear_order" value="<?= h($resultDogEarOrder['order']) ?>">
                 <input id="add_dog_ear_btn" type="submit" value="ドッグイヤー追加">
             </fieldset>
         </form>

@@ -13,8 +13,8 @@ $statusOrder = $stmtOrder->execute();
 if ($statusOrder == false) {
     sql_error($stmtOrder);
 } else {
-    $result = $stmtOrder->fetch(PDO::FETCH_ASSOC);
-    $orderAry = json_decode($result['order'], true);
+    $resultOrder = $stmtOrder->fetch(PDO::FETCH_ASSOC);
+    $orderAry = json_decode($resultOrder['order'], true);
 }
 
 // 3-2. books
@@ -25,8 +25,8 @@ $resAry = array();
 if ($statusBooks == false) {
     sql_error($stmtBooks);
 } else {
-    while ($result = $stmtBooks->fetch(PDO::FETCH_ASSOC)) {
-        $resAry[$result['id']] = $result;
+    while ($resultBooks = $stmtBooks->fetch(PDO::FETCH_ASSOC)) {
+        $resAry[$resultBooks['id']] = $resultBooks;
     }
     for ($i=0; $i < count($orderAry); $i++) { 
         $view = createView($resAry[$orderAry[$i]], $view);
@@ -73,7 +73,7 @@ function createView($result, $view){
     </header>
 
     <nav>
-        <form action="./php/insert_book.php" method="post" enctype="multipart/form-data">
+        <form id="insert_book_form" action="./php/insert_book.php" method="post" enctype="multipart/form-data">
             <fieldset>
                 <div id="register_book_box">
                     <h2>書籍の登録</h2>
@@ -83,6 +83,7 @@ function createView($result, $view){
                     <div id="book_url" class="textbox_fmt"><input class="input_textbox" type="text" name="url"></div>
                     <div id="book_cover_box"><img id="book_cover_img" src="./img/input_img.png" alt=""></div>
                     <input type="file" id="img_upload" accept="image/*" name="book_cover_img">
+                    <input type="hidden" id="books_order" name="books_order" value="<?= h($resultOrder['order']) ?>">
                     <div id="book_register_btn"><input class="button" type="submit" value="登録"></div>
                 </div>
             </fieldset>

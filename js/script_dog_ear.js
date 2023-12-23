@@ -101,13 +101,20 @@ $("#book_delete_btn").on("click", function () {
       },
     });
 
+    // booksのorderの更新
+    let orderAry = $(this).data("books_order");
+    orderAry = orderAry.filter((item) => item != bookId);
+    postUpdateBooksOrder(JSON.stringify(orderAry));
+
+    // dogEarOrderを削除
+    postDeleteDogEarOrder(bookId);
+
+    // bookの削除
     window.location.href = `./delete_book.php?book_id=${bookId}`;
   }
 });
 
 $(".dog_ear_item").on("change", "input, textarea", function () {
-  $val = $(this).val();
-  $type = $(this).attr("name");
   postUpdateDogEar(
     $(this).attr("name"),
     $(this).val(),
@@ -119,6 +126,12 @@ $(".dog_ear_item").on("click", ".delete_dog_ear", function () {
   if (confirm("本当に削除しますか？")) {
     const bookId = $(this).data("book_id");
     const dogEarId = $(this).data("dog_ear_id");
+
+    // dogEarOrderの更新
+    let orderAry = $(this).data("dog_ear_order");
+    orderAry = orderAry.filter((item) => item != dogEarId);
+    postUpdateDogEarOrder(JSON.stringify(orderAry), bookId);
+
     window.location.href = `./delete_dog_ear.php?book_id=${bookId}&dog_ear_id=${dogEarId}`;
   }
 });
@@ -127,11 +140,14 @@ $("#dog_ear_list").sortable({
   stop: function (event, ui) {
     let ary = $(this).sortable("toArray");
     let order = [];
-    let bookId = $(this).data('book_id');
-    ary.forEach(ele => {
+    let bookId = $(this).data("book_id");
+    ary.forEach((ele) => {
       order.push(parseInt(ele, 10));
     });
-    postUpdateDogEarOrder(JSON.stringify(order), bookId);
+
+    let orderJSON = JSON.stringify(order);
+    $("#dog_ear_order").val(orderJSON);
+    postUpdateDogEarOrder(orderJSON, bookId);
   },
 });
 
@@ -172,6 +188,24 @@ function postUpdateDogEar(type, changeVal, dogEarId) {
   });
 }
 
+function postUpdateBooksOrder(order) {
+  $.ajax({
+    url: "./update_order.php",
+    type: "post",
+    data: {
+      type: "books",
+      book_id: "NULL",
+      order: order,
+    },
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error: " + textStatus + ": " + errorThrown);
+    },
+  });
+}
+
 function postUpdateDogEarOrder(order, bookId) {
   $.ajax({
     url: "./update_order.php",
@@ -180,6 +214,22 @@ function postUpdateDogEarOrder(order, bookId) {
       type: "dog_ear",
       book_id: bookId,
       order: order,
+    },
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (jqXHR, textStatus, errorThrown) {
+      console.log("Error: " + textStatus + ": " + errorThrown);
+    },
+  });
+}
+
+function postDeleteDogEarOrder(bookId) {
+  $.ajax({
+    url: "./delete_order.php",
+    type: "post",
+    data: {
+      book_id: bookId,
     },
     success: function (response) {
       console.log(response);

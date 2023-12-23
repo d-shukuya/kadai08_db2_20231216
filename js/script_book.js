@@ -28,7 +28,10 @@ $("#book_list").sortable({
     ary.forEach(ele => {
       order.push(parseInt(ele, 10));
     });
-    postUpdateBooksOrder(JSON.stringify(order));
+
+    let orderJSON = JSON.stringify(order);
+    $("#books_order").val(orderJSON);
+    postUpdateBooksOrder(orderJSON);
   },
 });
 
